@@ -253,21 +253,12 @@
       font-weight: 400;
     }
 
-    .wish-delete {
-      display: inline-block;
-      background: #f5d9c8;
-      border: 1.5px solid #c8866e;
-      color: #a03020;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px 10px;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-    .wish-delete:hover {
-      background: #a03020;
-      color: white;
+    /* Loading state */
+    .loading {
+      text-align: center;
+      color: #b0957e;
+      font-size: 0.9rem;
+      padding: 20px;
     }
 
     /* Success state */
@@ -351,7 +342,7 @@
 
     <h2 class="wishes-title">💌 Wishes so far</h2>
     <div class="wishes-wall" id="wishesWall">
-      <!-- Seeded wishes -->
+      <div class="loading">Loading wishes...</div>
     </div>
   </div>
 </div>
@@ -359,6 +350,9 @@
 <p class="footer">Made with love for Raven Jackson-Stone · 2026</p>
 
 <script>
+  // ---------- Config ----------
+  const SHEET_API = 'https://script.google.com/a/macros/squareup.com/s/AKfycbxUMGStw_PgoMr18wgulU0KibqzhL3WPADXRzLips2Gy7Kg8vc0_x3F2soUxPGRPAULaQ/exec';
+
   // ---------- Petals ----------
   const colors = ['#f5b8a0','#f7cdb5','#e8a08c','#fad4bb','#f0c0a8','#f2d0c0'];
   const container = document.getElementById('petals');
@@ -376,53 +370,41 @@
 
   // ---------- State ----------
   let selectedEmoji = '💛';
-  const wishes = JSON.parse(localStorage.getItem('ravenWishes') || '[]');
+  let wishes = [];
 
-  const allSeedWishes = [
-    { name: 'The Square team 💼', text: 'Wishing you a lifetime of love, laughter, and all the adventures you deserve. So happy for you, Raven!', emoji: '🥂' },
-    { name: 'Andrea', text: 'You deserve every bit of happiness coming your way. Cheers to the most beautiful chapter yet!', emoji: '✨' },
-  ];
-  let deletedSeeds = JSON.parse(localStorage.getItem('ravenDeletedSeeds') || '[]');
-  let seedWishes = allSeedWishes.filter((_, i) => !deletedSeeds.includes(i));
-
-  function saveWishes() {
-    localStorage.setItem('ravenWishes', JSON.stringify(wishes));
+  // ---------- Load wishes from Google Sheet ----------
+  async function loadWishes() {
+    try {
+      const res = await fetch(SHEET_API);
+      wishes = await res.json();
+      renderWishes();
+    } catch (err) {
+      console.error('Failed to load wishes:', err);
+      document.getElementById('wishesWall').innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
+    }
   }
 
   function renderWishes() {
     const wall = document.getElementById('wishesWall');
     wall.innerHTML = '';
-    const all = [...seedWishes, ...wishes];
-    if (all.length === 0) {
+    if (wishes.length === 0) {
       wall.innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
       return;
     }
-    let seedIndex = 0;
-    let userIndex = 0;
-    all.forEach((w, i) => {
+    wishes.forEach(w => {
       const el = document.createElement('div');
       el.className = 'wish-card';
-      const isSeed = i < seedWishes.length;
-      let deleteBtn;
-      if (isSeed) {
-        deleteBtn = `<button class="wish-delete" onclick="deleteSeedWish(${seedIndex})">Delete</button>`;
-        seedIndex++;
-      } else {
-        deleteBtn = `<button class="wish-delete" onclick="deleteWish(${userIndex})">Delete</button>`;
-        userIndex++;
-      }
       el.innerHTML = `
         <span class="wish-name">${escHtml(w.name)}</span>
         <span class="wish-emoji">${w.emoji}</span>
         <p class="wish-text">"${escHtml(w.text)}"</p>
-        ${deleteBtn}
       `;
       wall.appendChild(el);
     });
   }
 
   function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   function pickEmoji(btn, emoji) {
@@ -435,48 +417,48 @@
     document.getElementById('charCount').textContent = document.getElementById('wishInput').value.length;
   }
 
-  function submitWish(e) {
+  async function submitWish(e) {
     e.preventDefault();
     const name = document.getElementById('nameInput').value.trim();
     const text = document.getElementById('wishInput').value.trim();
     if (!name || !text) return;
 
-    wishes.unshift({ name, text, emoji: selectedEmoji });
-    saveWishes();
-    renderWishes();
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
 
-    document.getElementById('wishForm').reset();
-    document.getElementById('charCount').textContent = '0';
-    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.emoji-btn[onclick*="💛"]').classList.add('active');
-    selectedEmoji = '💛';
+    try {
+      await fetch(SHEET_API, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, text, emoji: selectedEmoji })
+      });
 
-    const msg = document.getElementById('successMsg');
-    msg.style.display = 'block';
-    setTimeout(() => msg.style.display = 'none', 4000);
-  }
+      // Show success
+      document.getElementById('wishForm').reset();
+      document.getElementById('charCount').textContent = '0';
+      document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.emoji-btn[onclick*="💛"]').classList.add('active');
+      selectedEmoji = '💛';
 
-  function deleteWish(index) {
-    if (confirm('Remove this wish?')) {
-      wishes.splice(index, 1);
-      saveWishes();
-      renderWishes();
+      const msg = document.getElementById('successMsg');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 4000);
+
+      // Reload wishes after a short delay (give the sheet time to update)
+      setTimeout(loadWishes, 2000);
+    } catch (err) {
+      console.error('Failed to submit:', err);
+      alert('Something went wrong. Please try again!');
     }
+
+    btn.textContent = 'Send My Wishes 💌';
+    btn.disabled = false;
   }
 
-  function deleteSeedWish(index) {
-    if (confirm('Remove this wish?')) {
-      // Find the original index in allSeedWishes
-      const actualSeed = seedWishes[index];
-      const originalIndex = allSeedWishes.findIndex(s => s.name === actualSeed.name && s.text === actualSeed.text);
-      deletedSeeds.push(originalIndex);
-      localStorage.setItem('ravenDeletedSeeds', JSON.stringify(deletedSeeds));
-      seedWishes = allSeedWishes.filter((_, i) => !deletedSeeds.includes(i));
-      renderWishes();
-    }
-  }
-
-  renderWishes();
+  // Load wishes on page load
+  loadWishes();
 </script>
 </body>
 </html>
