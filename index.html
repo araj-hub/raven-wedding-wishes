@@ -375,12 +375,14 @@
   // ---------- Load wishes from Google Sheet ----------
   async function loadWishes() {
     try {
-      const res = await fetch(SHEET_API);
-      wishes = await res.json();
+      const res = await fetch(SHEET_API, { redirect: 'follow' });
+      const text = await res.text();
+      wishes = text ? JSON.parse(text) : [];
       renderWishes();
     } catch (err) {
       console.error('Failed to load wishes:', err);
-      document.getElementById('wishesWall').innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
+      wishes = [];
+      renderWishes();
     }
   }
 
