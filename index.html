@@ -384,10 +384,12 @@
   let selectedEmoji = '💛';
   const wishes = JSON.parse(localStorage.getItem('ravenWishes') || '[]');
 
-  const seedWishes = [
+  const allSeedWishes = [
     { name: 'The Square team 💼', text: 'Wishing you a lifetime of love, laughter, and all the adventures you deserve. So happy for you, Raven!', emoji: '🥂' },
     { name: 'Andrea', text: 'You deserve every bit of happiness coming your way. Cheers to the most beautiful chapter yet!', emoji: '✨' },
   ];
+  let deletedSeeds = JSON.parse(localStorage.getItem('ravenDeletedSeeds') || '[]');
+  let seedWishes = allSeedWishes.filter((_, i) => !deletedSeeds.includes(i));
 
   function saveWishes() {
     localStorage.setItem('ravenWishes', JSON.stringify(wishes));
@@ -401,13 +403,20 @@
       wall.innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
       return;
     }
+    let seedIndex = 0;
+    let userIndex = 0;
     all.forEach((w, i) => {
       const el = document.createElement('div');
       el.className = 'wish-card';
-      const isUserWish = i >= seedWishes.length;
-      const deleteBtn = isUserWish
-        ? `<button class="wish-delete" onclick="deleteWish(${i - seedWishes.length})" title="Delete this wish">✕</button>`
-        : '';
+      const isSeed = i < seedWishes.length;
+      let deleteBtn;
+      if (isSeed) {
+        deleteBtn = `<button class="wish-delete" onclick="deleteSeedWish(${seedIndex})" title="Delete this wish">✕</button>`;
+        seedIndex++;
+      } else {
+        deleteBtn = `<button class="wish-delete" onclick="deleteWish(${userIndex})" title="Delete this wish">✕</button>`;
+        userIndex++;
+      }
       el.innerHTML = `
         <span class="wish-name">${escHtml(w.name)}</span>
         ${deleteBtn}
@@ -457,6 +466,18 @@
     if (confirm('Remove this wish?')) {
       wishes.splice(index, 1);
       saveWishes();
+      renderWishes();
+    }
+  }
+
+  function deleteSeedWish(index) {
+    if (confirm('Remove this wish?')) {
+      // Find the original index in allSeedWishes
+      const actualSeed = seedWishes[index];
+      const originalIndex = allSeedWishes.findIndex(s => s.name === actualSeed.name && s.text === actualSeed.text);
+      deletedSeeds.push(originalIndex);
+      localStorage.setItem('ravenDeletedSeeds', JSON.stringify(deletedSeeds));
+      seedWishes = allSeedWishes.filter((_, i) => !deletedSeeds.includes(i));
       renderWishes();
     }
   }
