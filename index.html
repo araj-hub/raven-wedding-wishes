@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Wishes for Raven Jackson-Stone</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #fdf6ee;
+      font-family: 'Lato', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+    }
+
+    /* Petal animation */
+    .petals {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .petal {
+      position: absolute;
+      top: -30px;
+      width: 12px; height: 16px;
+      border-radius: 50% 0 50% 0;
+      opacity: 0.55;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.6; }
+      80%  { opacity: 0.4; }
+      100% { transform: translateY(110vh) rotate(360deg) translateX(40px); opacity: 0; }
+    }
+
+    /* Card container */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: #fffaf5;
+      border-radius: 24px;
+      max-width: 680px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(160, 100, 60, 0.12);
+      border: 1px solid #f0e0cc;
+      overflow: hidden;
+    }
+
+    /* Top banner */
+    .banner {
+      background: linear-gradient(135deg, #c8866e 0%, #d4a574 50%, #b87a5e 100%);
+      padding: 48px 40px 40px;
+      text-align: center;
+      position: relative;
+    }
+    .banner::before {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 40px;
+      background: #fffaf5;
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .rings {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 18px;
+    }
+    .ring {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,0.85);
+      border-radius: 50%;
+      margin: 0 -6px;
+    }
+
+    .banner h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: #fff;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+    .banner h1 em {
+      font-style: italic;
+      font-weight: 600;
+    }
+    .banner .subtitle {
+      color: rgba(255,255,255,0.88);
+      font-size: 0.95rem;
+      font-weight: 300;
+      margin-top: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Body */
+    .body {
+      padding: 36px 40px 40px;
+    }
+
+    .intro {
+      text-align: center;
+      color: #7a5c4a;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      font-weight: 300;
+    }
+
+    /* Wish form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #b87a5e;
+      margin-bottom: 8px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      border: 1.5px solid #e8d5c4;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.97rem;
+      color: #4a3728;
+      background: #fffdf9;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input[type="text"]:focus, textarea:focus {
+      border-color: #c8866e;
+      box-shadow: 0 0 0 3px rgba(200, 134, 110, 0.12);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.6;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.75rem;
+      color: #b0957e;
+      margin-top: 5px;
+    }
+
+    /* Emoji picker row */
+    .emoji-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .emoji-btn {
+      background: #fdf0e6;
+      border: 1.5px solid #e8d5c4;
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.15s;
+    }
+    .emoji-btn:hover, .emoji-btn.active {
+      background: #f5d9c8;
+      border-color: #c8866e;
+      transform: scale(1.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #c8866e, #b87a5e);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(184, 122, 94, 0.35);
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(184, 122, 94, 0.45);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Wishes wall */
+    .divider {
+      border: none;
+      border-top: 1px solid #f0e0cc;
+      margin: 36px 0;
+    }
+
+    .wishes-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #7a5c4a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .wishes-wall {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .wish-card {
+      background: linear-gradient(135deg, #fffbf7, #fdf0e6);
+      border: 1px solid #f0e0cc;
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+    }
+    .wish-card .wish-name {
+      font-weight: 700;
+      color: #c8866e;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+    .wish-card .wish-emoji {
+      position: absolute;
+      top: 16px; right: 18px;
+      font-size: 1.4rem;
+    }
+    .wish-card .wish-text {
+      color: #5a4235;
+      margin-top: 6px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+    }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #f0faf0;
+      border: 1px solid #c8e6c8;
+      border-radius: 14px;
+      color: #3a7a3a;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      color: #b0957e;
+      font-size: 0.78rem;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating petals -->
+<div class="petals" id="petals"></div>
+
+<div class="card">
+  <div class="banner">
+    <div class="rings">
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+    <h1>Congratulations,<br><em>Raven Jackson-Stone</em></h1>
+    <p class="subtitle">✦ Share your wedding wishes ✦</p>
+  </div>
+
+  <div class="body">
+    <p class="intro">
+      Raven is tying the knot! Leave a heartfelt message, a bit of advice, or your warmest wishes
+      to celebrate this beautiful new chapter. 💛
+    </p>
+
+    <form id="wishForm" onsubmit="submitWish(event)">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="nameInput" placeholder="e.g. Jamie from the SF team" maxlength="60" required />
+      </div>
+
+      <div class="form-group">
+        <label>Your Wish</label>
+        <textarea id="wishInput" placeholder="Write your message here…" maxlength="300" oninput="updateCount()" required></textarea>
+        <div class="char-count"><span id="charCount">0</span> / 300</div>
+      </div>
+
+      <div class="form-group">
+        <label>Add a vibe</label>
+        <div class="emoji-row" id="emojiRow">
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '💍')">💍</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '💐')">💐</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '🥂')">🥂</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '✨')">✨</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '🎉')">🎉</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '🩷')">🩷</button>
+          <button type="button" class="emoji-btn" onclick="pickEmoji(this, '🌸')">🌸</button>
+          <button type="button" class="emoji-btn active" onclick="pickEmoji(this, '💛')">💛</button>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Send My Wishes 💌</button>
+    </form>
+
+    <div class="success-msg" id="successMsg">
+      🎉 Your wish has been added! Raven will love reading it.
+    </div>
+
+    <hr class="divider" />
+
+    <h2 class="wishes-title">💌 Wishes so far</h2>
+    <div class="wishes-wall" id="wishesWall">
+      <!-- Seeded wishes -->
+    </div>
+  </div>
+</div>
+
+<p class="footer">Made with love for Raven Jackson-Stone · 2026</p>
+
+<script>
+  // ---------- Petals ----------
+  const colors = ['#f5b8a0','#f7cdb5','#e8a08c','#fad4bb','#f0c0a8','#f2d0c0'];
+  const container = document.getElementById('petals');
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = (8 + Math.random() * 10) + 'px';
+    p.style.height = (10 + Math.random() * 14) + 'px';
+    container.appendChild(p);
+  }
+
+  // ---------- State ----------
+  let selectedEmoji = '💛';
+  const wishes = JSON.parse(localStorage.getItem('ravenWishes') || '[]');
+
+  const seedWishes = [
+    { name: 'The Square team 💼', text: 'Wishing you a lifetime of love, laughter, and all the adventures you deserve. So happy for you, Raven!', emoji: '🥂' },
+    { name: 'Andrea', text: 'You deserve every bit of happiness coming your way. Cheers to the most beautiful chapter yet!', emoji: '✨' },
+  ];
+
+  function saveWishes() {
+    localStorage.setItem('ravenWishes', JSON.stringify(wishes));
+  }
+
+  function renderWishes() {
+    const wall = document.getElementById('wishesWall');
+    wall.innerHTML = '';
+    const all = [...seedWishes, ...wishes];
+    if (all.length === 0) {
+      wall.innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
+      return;
+    }
+    all.forEach(w => {
+      const el = document.createElement('div');
+      el.className = 'wish-card';
+      el.innerHTML = `
+        <span class="wish-name">${escHtml(w.name)}</span>
+        <span class="wish-emoji">${w.emoji}</span>
+        <p class="wish-text">"${escHtml(w.text)}"</p>
+      `;
+      wall.appendChild(el);
+    });
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function pickEmoji(btn, emoji) {
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedEmoji = emoji;
+  }
+
+  function updateCount() {
+    document.getElementById('charCount').textContent = document.getElementById('wishInput').value.length;
+  }
+
+  function submitWish(e) {
+    e.preventDefault();
+    const name = document.getElementById('nameInput').value.trim();
+    const text = document.getElementById('wishInput').value.trim();
+    if (!name || !text) return;
+
+    wishes.unshift({ name, text, emoji: selectedEmoji });
+    saveWishes();
+    renderWishes();
+
+    document.getElementById('wishForm').reset();
+    document.getElementById('charCount').textContent = '0';
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.emoji-btn[onclick*="💛"]').classList.add('active');
+    selectedEmoji = '💛';
+
+    const msg = document.getElementById('successMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 4000);
+  }
+
+  renderWishes();
+</script>
+</body>
+</html>
