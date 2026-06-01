@@ -254,23 +254,20 @@
     }
 
     .wish-delete {
-      position: absolute;
-      top: 14px;
-      right: 44px;
-      background: rgba(200, 134, 110, 0.1);
-      border: none;
-      color: #c8866e;
-      font-size: 0.85rem;
+      display: inline-block;
+      background: #f5d9c8;
+      border: 1.5px solid #c8866e;
+      color: #a03020;
+      font-size: 0.8rem;
+      font-weight: 700;
       cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.2s, color 0.2s, background 0.2s;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
+      margin-top: 10px;
     }
     .wish-delete:hover {
-      opacity: 1;
-      color: #a03020;
-      background: rgba(160, 48, 32, 0.12);
+      background: #a03020;
+      color: white;
     }
 
     /* Success state */
@@ -408,17 +405,17 @@
       const isSeed = i < seedWishes.length;
       let deleteBtn;
       if (isSeed) {
-        deleteBtn = `<button class="wish-delete" onclick="deleteSeedWish(${seedIndex})" title="Delete this wish">✕</button>`;
+        deleteBtn = `<button class="wish-delete" onclick="deleteSeedWish(${seedIndex})">Delete</button>`;
         seedIndex++;
       } else {
-        deleteBtn = `<button class="wish-delete" onclick="deleteWish(${userIndex})" title="Delete this wish">✕</button>`;
+        deleteBtn = `<button class="wish-delete" onclick="deleteWish(${userIndex})">Delete</button>`;
         userIndex++;
       }
       el.innerHTML = `
         <span class="wish-name">${escHtml(w.name)}</span>
-        ${deleteBtn}
         <span class="wish-emoji">${w.emoji}</span>
         <p class="wish-text">"${escHtml(w.text)}"</p>
+        ${deleteBtn}
       `;
       wall.appendChild(el);
     });
