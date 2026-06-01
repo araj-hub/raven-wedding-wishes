@@ -253,6 +253,29 @@
       font-weight: 400;
     }
 
+    .wish-delete {
+      position: absolute;
+      top: 14px;
+      right: 44px;
+      background: none;
+      border: none;
+      color: #c8866e;
+      font-size: 1.1rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s, color 0.2s;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .wish-card:hover .wish-delete {
+      opacity: 0.6;
+    }
+    .wish-delete:hover {
+      opacity: 1;
+      color: #a03020;
+      background: rgba(160, 48, 32, 0.08);
+    }
+
     /* Success state */
     .success-msg {
       display: none;
@@ -378,11 +401,16 @@
       wall.innerHTML = '<p style="text-align:center;color:#b0957e;font-size:0.9rem;">Be the first to leave a wish! 🌸</p>';
       return;
     }
-    all.forEach(w => {
+    all.forEach((w, i) => {
       const el = document.createElement('div');
       el.className = 'wish-card';
+      const isUserWish = i >= seedWishes.length;
+      const deleteBtn = isUserWish
+        ? `<button class="wish-delete" onclick="deleteWish(${i - seedWishes.length})" title="Delete this wish">✕</button>`
+        : '';
       el.innerHTML = `
         <span class="wish-name">${escHtml(w.name)}</span>
+        ${deleteBtn}
         <span class="wish-emoji">${w.emoji}</span>
         <p class="wish-text">"${escHtml(w.text)}"</p>
       `;
@@ -423,6 +451,14 @@
     const msg = document.getElementById('successMsg');
     msg.style.display = 'block';
     setTimeout(() => msg.style.display = 'none', 4000);
+  }
+
+  function deleteWish(index) {
+    if (confirm('Remove this wish?')) {
+      wishes.splice(index, 1);
+      saveWishes();
+      renderWishes();
+    }
   }
 
   renderWishes();
